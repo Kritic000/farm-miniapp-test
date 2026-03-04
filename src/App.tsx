@@ -302,22 +302,28 @@ export default function App() {
     };
   }, []);
 
-  // ✅ добавили "Акции" в чипы
+  // ✅ ВАЖНО: "Акции" есть в таблице в category, поэтому исключаем её из Set, а чип вставляем вручную.
   const categories = useMemo(() => {
     const set = new Set<string>();
-    products.forEach((p) => set.add(p.category));
+
+    products.forEach((p) => {
+      const cat = String(p.category || "").trim();
+      if (!cat) return;
+
+      if (cat.toLowerCase() === "акции") return; // чтобы не было дубля
+      set.add(cat);
+    });
+
     return ["Акции", "Все", ...Array.from(set)];
   }, [products]);
 
-  // ✅ "Акции" = любые категории, содержащие "акц"
+  // ✅ "Акции" = category строго "Акции"
   const filteredProducts = useMemo(() => {
     if (activeCategory === "Все") return products;
 
     if (activeCategory === "Акции") {
-      return products.filter((p) =>
-        String(p.category || "")
-          .toLowerCase()
-          .includes("акц")
+      return products.filter(
+        (p) => String(p.category || "").trim().toLowerCase() === "акции"
       );
     }
 
@@ -1164,10 +1170,12 @@ const styles: Record<string, React.CSSProperties> & {
     boxShadow: "0 10px 22px rgba(42,157,143,0.20)",
   },
 
+  // ✅ chips in multiple rows (wrap)
   chipsRow: {
     display: "flex",
     gap: 10,
-    overflowX: "auto",
+    flexWrap: "wrap",
+    overflowX: "visible",
     paddingBottom: 10,
     marginBottom: 10,
   },
@@ -1186,10 +1194,10 @@ const styles: Record<string, React.CSSProperties> & {
   },
 
   chipActive: {
+    borderColor: "rgba(42,157,143,0.35)",
     background:
       "linear-gradient(180deg, rgba(42,157,143,0.98) 0%, rgba(38,70,83,0.98) 140%)",
     color: "#ffffff",
-    borderColor: "rgba(42,157,143,0.35)",
     boxShadow: "0 10px 22px rgba(42,157,143,0.18)",
   },
 
