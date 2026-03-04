@@ -994,7 +994,7 @@ export default function App() {
 
       {tab === "catalog" && cartCount > 0 && (
         <button style={styles.floatingCart} onClick={() => setTab("cart")}>
-          🛒 {cartCount} • {money(grandTotal)} ₽
+          🛒 {cartCount} • {money(total)} ₽
         </button>
       )}
     </div>
@@ -1673,3 +1673,4 @@ const styles: Record<string, React.CSSProperties> & {
     boxShadow: "0 8px 14px rgba(0,0,0,0.12)",
   },
 };
+
